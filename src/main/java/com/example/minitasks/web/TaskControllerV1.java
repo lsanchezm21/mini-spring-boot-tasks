@@ -4,6 +4,7 @@ import com.example.minitasks.dto.CreateTaskDTO;
 import com.example.minitasks.model.SimpleTask;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,14 @@ public class TaskControllerV1 {
         return inMemory;
     }
 
+    @GetMapping("/tasks/{id}")
+    public SimpleTask getById(@PathVariable Long id) {
+        return inMemory.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
     @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
     public SimpleTask create(@RequestBody CreateTaskDTO dto) {
@@ -34,3 +43,4 @@ public class TaskControllerV1 {
         return t;
     }
 }
+
